@@ -1,0 +1,25 @@
+<odoo>
+    <record id="mrw_credential_configuration" model="ir.ui.view">
+        <field name="name">Mrw Configuration</field>
+        <field name="model">res.company</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="Mondial Relay Configuration">
+                    <group>
+                        <group>
+                            <field name="use_mondial_relay_shipping_provider"/>
+                            <field name="mondial_relay_api_url"
+                                   attrs="{'invisible': [('use_mondial_relay_shipping_provider','=',False)],'required': [('use_mondial_relay_shipping_provider','!=',False)]}"/>
+                            <field name="mondial_relay_merchant_code"
+                                   attrs="{'invisible': [('use_mondial_relay_shipping_provider','=',False)],'required': [('use_mondial_relay_shipping_provider','!=',False)]}"/>
+                            <field name="mondial_relay_security_code"
+                                   attrs="{'invisible': [('use_mondial_relay_shipping_provider','=',False)],'required': [('use_mondial_relay_shipping_provider','!=',False)]}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
