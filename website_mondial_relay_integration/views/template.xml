@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="inherited_payment_delivery_mondial"
+              inherit_id="website_sale_delivery.payment_delivery">
+        <xpath expr="//div[@id='delivery_method']" position="inside">
+            <input id="sale_order_mondial_js" t-if="order" name="sale_order"
+                   type="hidden" t-att-value="order.id"/>
+        </xpath>
+    </template>
+
+    <template id="mondial_relay_shipping_location"
+              name="mondial_relay Shipping Location">
+        <div class="form-group col-lg-12 div_location mondial_relay_loc_js">
+            <input id="mondial_relay_location" name="mondial_relay_location"
+                   type="hidden"/>
+            <p class="mt16">
+                <button type="button" class="btn btn-primary"
+                        name="mondial_relay_get_location" data-toggle="modal" data-target="#mondial_relayId">
+                    <span class="mr4">Find Locations</span>
+                    <i class="fa fa-arrow-right "></i>
+                </button>
+
+                <p class="disp_location mt16 mb0"></p>
+            </p>
+
+            <span class="set_address"></span>
+            <!--&lt;!&ndash; Modal &ndash;&gt;-->
+            <div class="modal fade" id="mondial_relayId" tabindex="-1" open="open"
+                 style="z-index: 1045;"
+                 role="dialog">
+                <div class="modal-dialog">
+                    <!--&lt;!&ndash; Modal content&ndash;&gt;-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span class="modal-title pull-left">Mondial Relay Location</span>
+                            <button type="button" class="close pull-right"
+                                    data-dismiss="modal">x
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="loader"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" name="close" class="btn btn-default"
+                                    data-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <!-- Json Data Call -->
+    <template id="mondial_relay_location_details" name="Location Details">
+        <div style="width:33%;float:left">
+            <t t-foreach="locations" t-as="location">
+                <tr t-if="location">
+                    <button type="button" class="btn item set_location_mondial_relay" name="set_location_mondial_relay"
+                            style="padding: 5px;border: 1px solid #ccc;cursor: pointer;width: 100%;text-align: left;background: transparent;">
+                        <p class="text-primary mb0"
+                           style="font-size: 13px;font-weight: bold;">
+                            <t t-esc="location.point_relais_name"/>
+                            <br/>
+                        </p>
+                        <small t-esc="location.point_relais_street"/>
+                        <div class=""><small t-esc="location.point_relais_city"/>,
+                            <small t-esc="location.point_relais_zip"/>
+                        </div>
+                    </button>
+                    <input type="hidden" name="location" t-att-value="location.id"></input>
+                </tr>
+            </t>
+        </div>
+    </template>
+</odoo>
