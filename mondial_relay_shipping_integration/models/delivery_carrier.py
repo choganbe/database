@@ -59,9 +59,11 @@ class DeliveryCarrier(models.Model):
         live_relay = pickings.sale_id.mondial_relay_location_id.point_relais_id if pickings.sale_id and pickings.sale_id.mondial_relay_location_id and pickings.sale_id.mondial_relay_location_id.point_relais_id else ""
         collection_data = "{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}{12}{13}{14}{15}{16}{17}{18}{19}{20}{21}{22}{23}{24}{25}{26}{27}{28}{29}{30}".format(
             self.company_id.mondial_relay_merchant_code or "", self.collection_mode or "",
-            self.delivery_method_code or "", "FR", picking_company_id.name or "",
+            self.delivery_method_code or "", "FR" if picking_company_id.country_id.code == "FR" else "EN",
+            picking_company_id.name or "",
             picking_company_id.street or "", picking_company_id.city or "", picking_company_id.zip or "",
-            "FR", picking_company_id.phone or "", picking_company_id.email, "FR",
+            picking_company_id.country_id.code, picking_company_id.phone or "", picking_company_id.email,
+            "FR" if picking_partner_id.country_id.code == "FR" else "EN",
             picking_partner_id.name or "", picking_partner_id.street or "", picking_partner_id.city or "",
             picking_partner_id.zip or "", dest_lang, picking_partner_id.phone or "",
             picking_partner_id.email or "", int(grams) or "", "1",
@@ -73,7 +75,7 @@ class DeliveryCarrier(models.Model):
         result = hashlib.md5(collection_data.encode())
         security_key = result.hexdigest().upper()
         _logger.info(security_key)
-        # _logger.info(collection_data)
+        _logger.info(collection_data)
         response = []
         for picking in pickings:
             total_bulk_weight = picking.weight_bulk
@@ -93,7 +95,8 @@ class DeliveryCarrier(models.Model):
                 self.delivery_method_code)
             etree.SubElement(creation_label, 'NDossier').text = ""
             etree.SubElement(creation_label, 'NClient').text = ""
-            etree.SubElement(creation_label, 'Expe_Langage').text = "FR"
+            etree.SubElement(creation_label,
+                             'Expe_Langage').text = "FR" if picking_company_id.country_id.code == "FR" else "EN"
             etree.SubElement(creation_label, 'Expe_Ad1').text = picking_company_id.name or ""
             etree.SubElement(creation_label, 'Expe_Ad2').text = ""
             etree.SubElement(creation_label, 'Expe_Ad3').text = picking_company_id.street or ""
@@ -106,7 +109,8 @@ class DeliveryCarrier(models.Model):
             etree.SubElement(creation_label, 'Expe_Tel2').text = ""
             etree.SubElement(creation_label, 'Expe_Mail').text = picking_company_id.email or ""
 
-            etree.SubElement(creation_label, 'Dest_Langage').text = "FR"
+            etree.SubElement(creation_label,
+                             'Dest_Langage').text = "FR" if picking_partner_id.country_id.code == "FR" else "EN"
             etree.SubElement(creation_label, 'Dest_Ad1').text = picking_partner_id.name or ""
             etree.SubElement(creation_label, 'Dest_Ad2').text = ""
             etree.SubElement(creation_label, 'Dest_Ad3').text = picking_partner_id.street or ""
@@ -164,7 +168,7 @@ class DeliveryCarrier(models.Model):
 
                 if status.get('ExpeditionNum'):
                     picking.mondial_relay_label_url = "http://www.mondialrelay.com" + status.get('URL_Etiquette')
-                    pdf_url = picking.mondial_relay_label_url.replace("A4","10x15")
+                    pdf_url = picking.mondial_relay_label_url.replace("A4", "10x15")
                     headers = {'Content-Type': "application/x-www-form-urlencoded", 'Accept': "application/pdf"}
                     pdf_response = requests.request("GET", url=pdf_url, headers=headers)
                     binary_data = base64.b64encode(pdf_response.content)
@@ -225,10 +229,11 @@ class DeliveryCarrier(models.Model):
         #             raise ValidationError("Response : %s"%response_data.get('Envelope').get('Body').get('WSI2_TracingColisDetailleResponse').get('WSI2_TracingColisDetailleResult').get('STAT'))
         #         if parcel_information:
         #             picking.tracking_details = response_stat + " - " + parcel_information
-                res = "https://www.mondialrelay.fr/suivi-de-colis/"
-                return res
-            # except Exception as e:
-            #     raise ValidationError(e)
+        res = "https://www.mondialrelay.fr/suivi-de-colis/"
+        return res
+
+    # except Exception as e:
+    #     raise ValidationError(e)
 
     def mondial_relay_vts_cancel_shipment(self, picking):
         raise ValidationError("Cancel API is not available!")

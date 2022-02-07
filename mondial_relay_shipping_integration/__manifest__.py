@@ -3,9 +3,9 @@
     # App information
     'name': 'Mondial Relay Shipping Integration',
     'category': 'Website',
-    'version': '15.0.27.10.21',
-    'summary': """Using Mondial Relay Easily manage Shipping Operation in odoo.Export Order While Validate Delivery Order.Import Tracking From Mondial Relay to odoo.Generate Label in odoo.We also Provide the gls,mrw,colissimo,dbschenker shipping integration.""",
-    'description': """""",
+    'version': '15.07.02.2022',
+    'summary': """""",
+    'description': """Using Mondial Relay Easily manage Shipping Operation in odoo.Export Order While Validate Delivery Order.Import Tracking From Mondial Relay to odoo.Generate Label in odoo.We also Provide the gls,mrw,colissimo,dbschenker shipping integration.""",
     'depends': ['delivery'],
     'live_test_url': 'http://www.vrajatechnologies.com/contactus',
     'data': ['view/res_company.xml',
@@ -26,4 +26,5 @@
     'license': 'OPL-1',
 }
 #15.0.27.10.21 initial stage
+#15.0.07.01.22 change static FR to dynamic in country code and language (sender and receiver both)
 

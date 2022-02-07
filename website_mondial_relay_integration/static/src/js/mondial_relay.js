@@ -162,10 +162,11 @@ odoo.define('website_mondial_relay_integration.checkout', function (require) {
                             'delivery_type':delivery_id
                         };
                         ajax.jsonRpc('/mondial_relay_service', 'call', values).then(function (service) {
-                            if (service && !$('div').hasClass('mondial_relay_loc_js'))
+                            // if (service && !$('div').hasClass('mondial_relay_loc_js'))
+                            if (service)
                             {
-//                              $('.mondial_relay_loc_js').remove()
-                                $('.modal-backdrop').addClass('hidden')
+                                $('.mondial_relay_loc_js').remove();
+                                $('.modal-backdrop').addClass('hidden');
                                 $('#delivery_method').find('#delivery_'+ delivery_id +'').parents('.list-group-item').append(service);
 
                                 /*
@@ -174,7 +175,7 @@ odoo.define('website_mondial_relay_integration.checkout', function (require) {
                                 var $get_location = $('button[name="mondial_relay_get_location"]');
                                 $get_location.on('click', function () {
                                     ajax.jsonRpc('/mondial_relay_get_location', 'call').then(function (data) {
-                                        if (!data.error && data.dic)
+                                        if (!data.error && data.template)
                                         {
                                             $('#mondial_relayId').find('.modal-body').html('');
                                             $('#mondial_relayId').find('.modal-body').html(data.template);
@@ -229,7 +230,7 @@ odoo.define('website_mondial_relay_integration.checkout', function (require) {
                                 });
                             }
                             else{
-                                $('.mondial_relay_loc_js').remove()
+                                $('.mondial_relay_loc_js').remove();
                             }
                         });
                     }

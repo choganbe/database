@@ -3,7 +3,7 @@
     # App information
     'name': 'eCommerce Mondial Relay Integration',
     'category': 'Website',
-    'version': '15.0',
+    'version': '15.07.02.2022',
     'summary': """""",
     'description': """We are providing following modules, Shipping Operations, shipping, odoo shipping integration,odoo shipping connector, dhl express, fedex, ups, gls, usps, stamps.com, shipstation, bigcommerce, easyship, amazon shipping, sendclound, ebay, shopify.""",
     'depends': [

@@ -21,16 +21,16 @@ class SaleOrder(models.Model):
         shipper_address = order.warehouse_id.partner_id
         recipient_address = order.partner_shipping_id
         # check sender Address
-        if not shipper_address.zip or not shipper_address.city or not shipper_address.country_id:
-            raise ValidationError("Please Define Proper Sender Address!")
-        # check Receiver Address
-        if not recipient_address.zip or not recipient_address.city or not recipient_address.country_id:
-            raise ValidationError("Please Define Proper Recipient Address!")
+        # if not shipper_address.zip or not shipper_address.city or not shipper_address.country_id:
+        #     raise ValidationError("Please Define Proper Sender Address!")
+        # # check Receiver Address
+        # if not recipient_address.zip or not recipient_address.city or not recipient_address.country_id:
+        #     raise ValidationError("Please Define Proper Recipient Address!")
         if not self.carrier_id.company_id:
             raise ValidationError("Credential not available!")
 
         try:
-            data = "{0}{1}{2}{3}{4}{5}{6}".format(self.company_id.mondial_relay_merchant_code, "FR",
+            data = "{0}{1}{2}{3}{4}{5}{6}".format(self.company_id.mondial_relay_merchant_code, recipient_address.country_id.code,
                                                   recipient_address.city, recipient_address.zip,
                                                   self.carrier_id.delivery_method_code, "5",
                                                   self.company_id.mondial_relay_security_code)
@@ -44,7 +44,7 @@ class SaleOrder(models.Model):
             point_relais_recherche.attrib['xmlns'] = "http://www.mondialrelay.fr/webservice/"
             etree.SubElement(point_relais_recherche, 'Enseigne').text = str(
                 self.company_id and self.company_id.mondial_relay_merchant_code)
-            etree.SubElement(point_relais_recherche, 'Pays').text = "FR"
+            etree.SubElement(point_relais_recherche, 'Pays').text = str(recipient_address.country_id.code)
             etree.SubElement(point_relais_recherche, 'Ville').text = str(recipient_address.city or "")
             etree.SubElement(point_relais_recherche, 'CP').text = str(recipient_address.zip or "")
             etree.SubElement(point_relais_recherche, 'Action').text = str(self.carrier_id.delivery_method_code)
