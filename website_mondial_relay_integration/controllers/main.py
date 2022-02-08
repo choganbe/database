@@ -28,10 +28,10 @@ class WebsiteSale(http.Controller):
         results = {}
         if post.get('order') and post.get('delivery_type'):
             delivery_method = request.env['delivery.carrier'].sudo().browse(int(post.get('delivery_type')))
-            if delivery_method.delivery_type == 'mondial_relay_vts':
+            order = request.website.sale_get_order()
+            if delivery_method.delivery_type == 'mondial_relay_vts' and order.carrier_id.delivery_method_code in ['24R','24L']:
                 results = request.env['ir.ui.view']._render_template(
                     'website_mondial_relay_integration.mondial_relay_shipping_location')
-            order = request.website.sale_get_order()
             if order and order.carrier_id:
                 existing_records = request.env['mondialrelay.locations'].sudo().search([('sale_order_id', '=', order.id)])
                 existing_records.sudo().unlink()
